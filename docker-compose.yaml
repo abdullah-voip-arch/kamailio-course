@@ -1,5 +1,5 @@
 ---
-version: "3.9"
+#version: "5.9"
 services:
 
   sngrep:
@@ -23,6 +23,12 @@ services:
       - ./kamailio-default/:/etc/kamailio
     environment:
       - KAM_SHM_MEM_SIZE=256
+      - CORE_IP=172.16.254.2
+      - CORE_SUBNET=172.16.254.1/24
+      - PUBLIC_IP=192.168.254.2
+      - TLS_PORT=5061
+      - UDP_PORT=5060
+
     networks:
       external:
         ipv4_address: 192.168.254.2
@@ -34,7 +40,7 @@ services:
     container_name: b2bua_internal_01 
     stdin_open: true
     image: andrius/pjsua:latest
-    command: pjsua --null-audio --no-tcp --auto-answer=404
+    command: pjsua --null-audio --no-tcp --auto-answer=404 --outbound sip:172.16.254.2;lr
     ports:
       - "5091:5060"
     networks:
@@ -46,7 +52,7 @@ services:
     container_name: b2bua_internal_02 
     stdin_open: true
     image: andrius/pjsua:latest
-    command: pjsua --null-audio --no-tcp --auto-answer=200
+    command: pjsua --null-audio --no-tcp --auto-answer=200 --outbound sip:172.16.254.2;lr
     ports:
       - "5092:5060"
     networks:
